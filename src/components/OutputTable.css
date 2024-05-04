@@ -1,0 +1,22 @@
+table {
+    margin-top: 40px;
+    padding-left: 20px;
+    width: 100%;
+    background-color: rgb(240, 240, 240);
+    font-size: 20px;
+    text-align: left;
+}
+
+thead {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+td {
+    padding: 6px;
+    padding-left: 12px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+th {
+    padding: 12px;
+}

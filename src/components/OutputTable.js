@@ -1,3 +1,5 @@
+import "./OutputTable.css";
+
 const OutputTable = ({ data }) => {
     return (
         <table>
