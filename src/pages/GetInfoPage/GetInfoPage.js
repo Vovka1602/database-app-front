@@ -18,27 +18,30 @@ const GetInfoPage = () => {
 
     const getData = (e) => {
         e.preventDefault();
-        let sqlQuery = "SELECT " + selectBlock
-            + " FROM products";
-        console.log(sqlQuery);
-        fetch(`http://localhost:8000/execute-query?query=${encodeURIComponent(sqlQuery)}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                setData(data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        if (selectItems.length === 0) {
+            alert("Please select at least one item in the Select field");
+        }
+        else {
+            let sqlQuery = "SELECT " + selectBlock
+                + " FROM products";
+            console.log(sqlQuery);
+            fetch(`http://localhost:8000/execute-query?query=${encodeURIComponent(sqlQuery)}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    setData(data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     }
 
     const selectItemCheckboxChange = (e) => {
         if (e.target.checked) {
             setSelectItems(selectItems => [...selectItems, e.target.value]);
-            console.log(selectItems);
         } else {
             setSelectItems(selectItems => selectItems.filter(item => item !== e.target.value));
-            console.log(selectItems);
         }
     };
 
