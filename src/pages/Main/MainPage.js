@@ -1,3 +1,5 @@
+import "bootstrap/dist/css/bootstrap.min.css";
+
 const MainPage = () => {
     const getData = (e) => {
         e.preventDefault();
@@ -13,8 +15,8 @@ const MainPage = () => {
 
     return (
         <div>
-            <h2>Main Page</h2>
-            <button onClick={getData}>Get products data</button>
+            <h1 className="mt-4">Main Page</h1>
+            <button className="btn btn-primary btn-lg px-4 mt-5" onClick={getData}>Get products data</button>
         </div>
     );
 }
