@@ -6,14 +6,39 @@ import "./GetInfoPage.css";
 
 const GetInfoPage = () => {
     const [data, setData] = useState(null);
-    const [selectBlock, setSelectBlock] = useState("");
+    
     const [selectItems, setSelectItems] = useState([]);
 
+    const [selectBlock, setSelectBlock] = useState("");
+
     useEffect(() => {
-        if (selectItems.length > 0) {
-            setSelectBlock(selectItems.join(', '));
-            console.log(selectBlock);
+        const compileSelectBlock = () => {
+            if (selectItems.length > 0) {
+                let selectElements = [];
+                if (selectItems.includes("products.id")) {
+                    selectElements.push("products.id");
+                }
+                if (selectItems.includes("products.name")) {
+                    selectElements.push("products.name");
+                }
+                if (selectItems.includes("products.producer")) {
+                    selectElements.push("products.producer");
+                }
+                if (selectItems.includes("products.model")) {
+                    selectElements.push("products.model");
+                }
+                if (selectItems.includes("products.color")) {
+                    selectElements.push("products.color");
+                }
+                if (selectItems.includes("products.price")) {
+                    selectElements.push("products.price");
+                }
+                setSelectBlock(selectElements.join(', '));
+                console.log(selectBlock);
+            }
         }
+        
+        compileSelectBlock();
     }, [selectItems, selectBlock]);
 
     const getData = (e) => {
