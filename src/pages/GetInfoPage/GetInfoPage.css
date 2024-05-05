@@ -1,11 +1,12 @@
 .control-panel {
     display: flex;
+    flex-direction: row;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .checkbox-panel {
     padding: 20px;
-    display: flex;
-    justify-content: space-between;
 }
 
 .checkbox-panel-elem {
