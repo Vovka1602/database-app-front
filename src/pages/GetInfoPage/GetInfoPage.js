@@ -132,6 +132,9 @@ const GetInfoPage = () => {
                     }
                     return false;
                 }));
+                if (orderbyItem === "distributors.distributor") {
+                    setOrderbyItem("products.id");
+                }
             }
             if (e.target.value === "import.import_tax") {
                 setFromItems(fromItems => fromItems.filter(item => item !== "import"));
@@ -143,6 +146,9 @@ const GetInfoPage = () => {
                     }
                     return false;
                 }));
+                if (orderbyItem === "import.import_tax") {
+                    setOrderbyItem("products.id");
+                }
             }
         }
     };
@@ -269,6 +275,30 @@ const GetInfoPage = () => {
                             />
                             <label className='form-check-label px-2 fs-5'>price</label>
                         </div>
+                        {selectItems.includes("distributors.distributor") ? (
+                            <div className='control-panel-elem'>
+                                <input
+                                    className='form-check-input px-2 py-2 mt-2'
+                                    type="radio"
+                                    value="distributors.distributor"
+                                    onChange={orderbyRadioChange}
+                                    checked={orderbyItem === "distributors.distributor"}
+                                />
+                                <label className='form-check-label px-2 fs-5'>distributor</label>
+                            </div>
+                        ) : (<></>)}
+                        {selectItems.includes("import.import_tax") ? (
+                            <div className='control-panel-elem'>
+                                <input
+                                    className='form-check-input px-2 py-2 mt-2'
+                                    type="radio"
+                                    value="import.import_tax"
+                                    onChange={orderbyRadioChange}
+                                    checked={orderbyItem === "import.import_tax"}
+                                />
+                                <label className='form-check-label px-2 fs-5'>import_tax</label>
+                            </div>
+                        ) : (<></>)}
                     </div>
                 </div>
             </div>
