@@ -218,11 +218,11 @@ const GetInfoPage = () => {
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.price" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>price</label>
                         </div>
-                        <div className='control-panel-elem mt-3'>
+                        <div className='control-panel-elem mt-4'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="distributors.distributor" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>distributor</label>
                         </div>
-                        <div className='control-panel-elem mt-3'>
+                        <div className='control-panel-elem mt-4'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="import.import_tax" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>import_tax</label>
                         </div>

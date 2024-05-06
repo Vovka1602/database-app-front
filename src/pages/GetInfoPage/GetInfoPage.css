@@ -8,6 +8,7 @@
 .control-panel {
     padding: 20px;
     padding-top: 10px;
+    padding-bottom: 14px;
 }
 
 .control-panel-elem {
@@ -25,4 +26,8 @@
 
 .card {
     border-radius: 14px;
+}
+
+.form-check-input {
+    border: 1px solid rgb(150, 150, 150);
 }
