@@ -1,5 +1,6 @@
 import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.min.js";
 import { useEffect, useState } from "react";
 import OutputTable from '../../components/OutputTable';
 import "./GetInfoPage.css";
@@ -25,10 +26,12 @@ const GetInfoPage = () => {
     const [fromItems, setFromItems] = useState(["products"]);
     const [whereItems, setWhereItems] = useState([]);
     const [orderbyItem, setOrderbyItem] = useState("products.id");
+    const [orderDesc, setOrderDesc] = useState(false);
 
     const [selectBlock, setSelectBlock] = useState("");
     const [fromBlock, setFromBlock] = useState("");
     const [whereBlock, setWhereBlock] = useState("");
+    const [orderbyBlock, setOrderbyBlock] = useState("products.id");
 
     useEffect(() => {
         const compileSelectBlock = () => {
@@ -75,10 +78,19 @@ const GetInfoPage = () => {
             setWhereBlock(whereElements.join(') and ('));
         }
 
+        const compileOrderbyBlock = () => {
+            if(orderDesc === true) {
+                setOrderbyBlock(orderbyItem + " desc");
+            } else {
+                setOrderbyBlock(orderbyItem);
+            }
+        }
+
         compileSelectBlock();
         compileFromBlock();
         compileWhereBlock();
-    }, [selectItems, selectBlock, fromItems, whereItems, whereBlock]);
+        compileOrderbyBlock();
+    }, [selectItems, selectBlock, fromItems, whereItems, whereBlock, orderDesc, orderbyItem, orderbyBlock]);
 
     const getData = (e) => {
         e.preventDefault();
@@ -92,7 +104,7 @@ const GetInfoPage = () => {
                 sqlQuery += " WHERE (" + whereBlock + ")";
             }
             if (includeOrderby === true) {
-                sqlQuery += " ORDER BY " + orderbyItem;
+                sqlQuery += " ORDER BY " + orderbyBlock;
             }
             else {
                 sqlQuery += " ORDER BY products.id";
@@ -162,8 +174,15 @@ const GetInfoPage = () => {
     }
 
     const orderbyRadioChange = (e) => {
-        console.log(e.target.value);
         setOrderbyItem(e.target.value);
+    }
+
+    const orderbyDescCheckboxChange = (e) => {
+        if (e.target.checked) {
+            setOrderDesc(true);
+        } else {
+            setOrderDesc(false);
+        }
     }
 
     return (
@@ -176,35 +195,35 @@ const GetInfoPage = () => {
                     </div>
                     <div className='control-panel'>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.id" onChange={selectItemCheckboxChange} />
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.id" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>id</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.name" onChange={selectItemCheckboxChange} />
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.name" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>name</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.producer" onChange={selectItemCheckboxChange} />
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.producer" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>producer</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.model" onChange={selectItemCheckboxChange} />
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.model" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>model</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.color" onChange={selectItemCheckboxChange} />
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.color" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>color</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.price" onChange={selectItemCheckboxChange} />
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.price" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>price</label>
                         </div>
-                        <div className='control-panel-elem mt-2'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="distributors.distributor" onChange={selectItemCheckboxChange} />
+                        <div className='control-panel-elem mt-3'>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="distributors.distributor" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>distributor</label>
                         </div>
-                        <div className='control-panel-elem mt-2'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="import.import_tax" onChange={selectItemCheckboxChange} />
+                        <div className='control-panel-elem mt-3'>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="import.import_tax" onChange={selectItemCheckboxChange}/>
                             <label className='form-check-label px-2 fs-5'>import_tax</label>
                         </div>
                     </div>
@@ -299,6 +318,12 @@ const GetInfoPage = () => {
                                 <label className='form-check-label px-2 fs-5'>import_tax</label>
                             </div>
                         ) : (<></>)}
+                        <div className='control-panel-item mt-3'>
+                            <div className='control-panel-elem form-switch'>
+                                <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange}/>
+                                <h4 className='px-2 fs-5'>desc</h4>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
