@@ -5,11 +5,26 @@ import OutputTable from '../../components/OutputTable';
 import "./GetInfoPage.css";
 
 const GetInfoPage = () => {
+    const distributorsConnection = {
+        "field": "distributors.producer",
+        "operator": "=",
+        "value": "products.producer"
+    }
+
+    const importConnenction = {
+        "field": "import.id",
+        "operator": "=",
+        "value": "products.id"
+    }
+
     const [data, setData] = useState(null);
+
+    const [includeOrderby, setIncludeOrderby] = useState(false);
 
     const [selectItems, setSelectItems] = useState([]);
     const [fromItems, setFromItems] = useState(["products"]);
     const [whereItems, setWhereItems] = useState([]);
+    const [orderbyItem, setOrderbyItem] = useState("products.id");
 
     const [selectBlock, setSelectBlock] = useState("");
     const [fromBlock, setFromBlock] = useState("");
@@ -76,11 +91,16 @@ const GetInfoPage = () => {
             if (whereItems.length > 0) {
                 sqlQuery += " WHERE (" + whereBlock + ")";
             }
+            if (includeOrderby === true) {
+                sqlQuery += " ORDER BY " + orderbyItem;
+            }
+            else {
+                sqlQuery += " ORDER BY products.id";
+            }
             console.log(sqlQuery);
             fetch(`http://localhost:8000/execute-query?query=${encodeURIComponent(sqlQuery)}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
                     setData(data);
                 })
                 .catch(error => {
@@ -94,77 +114,160 @@ const GetInfoPage = () => {
             setSelectItems(selectItems => [...selectItems, e.target.value]);
             if (e.target.value === "distributors.distributor") {
                 setFromItems(fromItems => [...fromItems, "distributors"]);
-                setWhereItems(whereItems => [...whereItems, {
-                    "field": "distributors.producer",
-                    "operator": "=",
-                    "value": "products.producer"
-                }]);
+                setWhereItems(whereItems => [...whereItems, distributorsConnection]);
             }
-            else if (e.target.value === "import.import_tax") {
+            if (e.target.value === "import.import_tax") {
                 setFromItems(fromItems => [...fromItems, "import"]);
-                setWhereItems(whereItems => [...whereItems, {
-                    "field": "import.id",
-                    "operator": "=",
-                    "value": "products.id"
-                }]);
+                setWhereItems(whereItems => [...whereItems, importConnenction]);
             }
         } else {
             setSelectItems(selectItems => selectItems.filter(item => item !== e.target.value));
             if (e.target.value === "distributors.distributor") {
                 setFromItems(fromItems => fromItems.filter(item => item !== "distributors"));
-                setWhereItems(whereItems => whereItems.filter(item => 
-                    item.field !== "distributors.producer" && item.operator !== "=" && item.value !== "products.producer"
-                ));
+                setWhereItems(whereItems => whereItems.filter(item => {
+                    for (let key in distributorsConnection) {
+                        if (item[key] !== distributorsConnection[key]) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }));
             }
-            else if (e.target.value === "import.import_tax") {
+            if (e.target.value === "import.import_tax") {
                 setFromItems(fromItems => fromItems.filter(item => item !== "import"));
-                setWhereItems(whereItems => whereItems.filter(item => 
-                    item.field !== "import.id" && item.operator !== "=" && item.value !== "products.id"
-                ));
+                setWhereItems(whereItems => whereItems.filter(item => {
+                    for (let key in importConnenction) {
+                        if (item[key] !== importConnenction[key]) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }));
             }
         }
     };
 
+    const includeOrderbyCheckboxChange = (e) => {
+        if (e.target.checked) {
+            setIncludeOrderby(true);
+        } else {
+            setIncludeOrderby(false);
+        }
+    }
+
+    const orderbyRadioChange = (e) => {
+        console.log(e.target.value);
+        setOrderbyItem(e.target.value);
+    }
+
     return (
         <div>
             <h1 className="mt-4">Search products</h1>
-            <div className='control-panel'>
-                <div className='card mt-4 ms-3 me-3 px-2'>
-                    <div className='checkbox-panel-label'>
+            <div className='control-panel-container'>
+                <div className='card mt-4 ms-3 me-3 px-1'>
+                    <div className='control-panel-label'>
                         <h2>Select</h2>
                     </div>
-                    <div className='checkbox-panel'>
-                        <div className='checkbox-panel-elem'>
+                    <div className='control-panel'>
+                        <div className='control-panel-elem'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.id" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>id</label>
                         </div>
-                        <div className='checkbox-panel-elem'>
+                        <div className='control-panel-elem'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.name" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>name</label>
                         </div>
-                        <div className='checkbox-panel-elem'>
+                        <div className='control-panel-elem'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.producer" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>producer</label>
                         </div>
-                        <div className='checkbox-panel-elem'>
+                        <div className='control-panel-elem'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.model" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>model</label>
                         </div>
-                        <div className='checkbox-panel-elem'>
+                        <div className='control-panel-elem'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.color" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>color</label>
                         </div>
-                        <div className='checkbox-panel-elem'>
+                        <div className='control-panel-elem'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.price" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>price</label>
                         </div>
-                        <div className='checkbox-panel-elem'>
+                        <div className='control-panel-elem mt-2'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="distributors.distributor" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>distributor</label>
                         </div>
-                        <div className='checkbox-panel-elem'>
+                        <div className='control-panel-elem mt-2'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="import.import_tax" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>import_tax</label>
+                        </div>
+                    </div>
+                </div>
+                <div className='card mt-4 ms-1 me-1 px-1'>
+                    <div className='control-panel-label'>
+                        <input className='form-check-input px-2 py-2 mt-2 me-2' type='checkbox' onChange={includeOrderbyCheckboxChange}></input>
+                        <h2>Order by</h2>
+                    </div>
+                    <div className='control-panel'>
+                        <div className='control-panel-elem'>
+                            <input
+                                className='form-check-input px-2 py-2 mt-2'
+                                type="radio"
+                                value="products.id"
+                                onChange={orderbyRadioChange}
+                                checked={orderbyItem === "products.id"}
+                            />
+                            <label className='form-check-label px-2 fs-5'>id</label>
+                        </div>
+                        <div className='control-panel-elem'>
+                            <input
+                                className='form-check-input px-2 py-2 mt-2'
+                                type="radio"
+                                value="products.name"
+                                onChange={orderbyRadioChange}
+                                checked={orderbyItem === "products.name"}
+                            />
+                            <label className='form-check-label px-2 fs-5'>name</label>
+                        </div>
+                        <div className='control-panel-elem'>
+                            <input
+                                className='form-check-input px-2 py-2 mt-2'
+                                type="radio"
+                                value="products.producer"
+                                onChange={orderbyRadioChange}
+                                checked={orderbyItem === "products.producer"}
+                            />
+                            <label className='form-check-label px-2 fs-5'>producer</label>
+                        </div>
+                        <div className='control-panel-elem'>
+                            <input
+                                className='form-check-input px-2 py-2 mt-2'
+                                type="radio"
+                                value="products.model"
+                                onChange={orderbyRadioChange}
+                                checked={orderbyItem === "products.model"}
+                            />
+                            <label className='form-check-label px-2 fs-5'>model</label>
+                        </div>
+                        <div className='control-panel-elem'>
+                            <input
+                                className='form-check-input px-2 py-2 mt-2'
+                                type="radio"
+                                value="products.color"
+                                onChange={orderbyRadioChange}
+                                checked={orderbyItem === "products.color"}
+                            />
+                            <label className='form-check-label px-2 fs-5'>color</label>
+                        </div>
+                        <div className='control-panel-elem'>
+                            <input
+                                className='form-check-input px-2 py-2 mt-2'
+                                type="radio"
+                                value="products.price"
+                                onChange={orderbyRadioChange}
+                                checked={orderbyItem === "products.price"}
+                            />
+                            <label className='form-check-label px-2 fs-5'>price</label>
                         </div>
                     </div>
                 </div>

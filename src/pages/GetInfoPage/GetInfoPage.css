@@ -1,24 +1,25 @@
-.control-panel {
+.control-panel-container {
     display: flex;
     flex-direction: row;
     margin-left: 20px;
     margin-right: 20px;
 }
 
-.checkbox-panel {
+.control-panel {
     padding: 20px;
 }
 
-.checkbox-panel-elem {
+.control-panel-elem {
     display: flex;
     flex-direction: row;
     vertical-align: middle;
 }
 
-.checkbox-panel-label {
+.control-panel-label {
     display: flex;
-    padding-top: 12px;
-    padding-left: 20px;
+    padding-top: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 .card {
