@@ -2,19 +2,20 @@ table {
     margin-top: 40px;
     padding-left: 20px;
     width: 100%;
-    background-color: rgb(240, 240, 240);
+    background-color: rgb(30, 32, 35);
+    color: white;
     font-size: 20px;
     text-align: left;
 }
 
 thead {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 td {
     padding: 6px;
     padding-left: 12px;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.07);
 }
 
 th {

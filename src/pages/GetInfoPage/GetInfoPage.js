@@ -209,8 +209,8 @@ const GetInfoPage = () => {
     }
 
     return (
-        <div>
-            <h1 className="mt-4">Search products</h1>
+        <div className='container' data-bs-theme="dark">
+            <h1>Search products</h1>
             <div className='control-panel-container'>
                 <div className='card mt-4 ms-3 me-3 px-1'>
                     <div className='control-panel-label'>
@@ -350,7 +350,17 @@ const GetInfoPage = () => {
                     </div>
                 </div>
             </div>
-            <button className="btn btn-primary btn-lg px-4 mt-5" onClick={handleShowModal}>Generate SQL</button>
+            <button className='button-green mt-3' onClick={handleShowModal}>
+                <div className='button-content'>
+                    <div className='button-icon'>
+                        <img src='./images/tick_green.png'></img>
+                        <img className='img-hover' src='./images/tick_black.png'></img>
+                    </div>
+                    <div className='button-label'>
+                        Generate SQL
+                    </div>
+                </div>
+            </button>
             {data && <OutputTable data={data} />}
             <ConfirmationModal show={showModal} data={sqlQuery} onUpdateData={handleUpdateData} onClose={handleClose} />
         </div>
