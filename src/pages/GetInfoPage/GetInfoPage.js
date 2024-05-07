@@ -1,30 +1,32 @@
 import React from 'react';
 import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.min.js";
 import { useEffect, useState } from "react";
 import OutputTable from '../../components/OutputTable';
 import "./GetInfoPage.css";
+import ConfirmationModal from '../../components/ConfirmationModal';
 
 const GetInfoPage = () => {
     const distributorsConnection = {
         "field": "distributors.producer",
         "operator": "=",
-        "value": "products.producer"
+        "value": ['products.producer']
     }
 
     const importConnenction = {
         "field": "import.id",
         "operator": "=",
-        "value": "products.id"
+        "value": ['products.id']
     }
 
     const [data, setData] = useState(null);
+
+    const [showModal, setShowModal] = useState(false);
 
     const [includeOrderby, setIncludeOrderby] = useState(false);
 
     const [selectItems, setSelectItems] = useState([]);
     const [fromItems, setFromItems] = useState(["products"]);
-    const [whereItems, setWhereItems] = useState([]);
+    const [whereItems, setWhereItems] = useState([{ "field": "products.color", "operator": "=", "value": ["'чорний'", "'білий'"] }]);
     const [orderbyItem, setOrderbyItem] = useState("products.id");
     const [orderDesc, setOrderDesc] = useState(false);
 
@@ -32,6 +34,8 @@ const GetInfoPage = () => {
     const [fromBlock, setFromBlock] = useState("");
     const [whereBlock, setWhereBlock] = useState("");
     const [orderbyBlock, setOrderbyBlock] = useState("products.id");
+
+    const [sqlQuery, setSqlQuery] = useState("");
 
     useEffect(() => {
         const compileSelectBlock = () => {
@@ -72,14 +76,16 @@ const GetInfoPage = () => {
         const compileWhereBlock = () => {
             let whereElements = [];
             whereItems.forEach(elem => {
-                let element = elem.field + elem.operator + elem.value;
+                let element = elem.field + elem.operator;
+                let values = elem.value.join(` or ${elem.field}=`);
+                element += values;
                 whereElements.push(element);
             });
             setWhereBlock(whereElements.join(') and ('));
         }
 
         const compileOrderbyBlock = () => {
-            if(orderDesc === true) {
+            if (orderDesc === true) {
                 setOrderbyBlock(orderbyItem + " desc");
             } else {
                 setOrderbyBlock(orderbyItem);
@@ -92,33 +98,31 @@ const GetInfoPage = () => {
         compileOrderbyBlock();
     }, [selectItems, selectBlock, fromItems, whereItems, whereBlock, orderDesc, orderbyItem, orderbyBlock]);
 
-    const getData = (e) => {
-        e.preventDefault();
-        if (selectItems.length === 0) {
-            alert("Please select at least one item in the Select field");
+    useEffect(() => {
+        let sql = "SELECT " + selectBlock
+            + " FROM " + fromBlock
+        if (whereItems.length > 0) {
+            sql += " WHERE (" + whereBlock + ")";
+        }
+        if (includeOrderby === true) {
+            sql += " ORDER BY " + orderbyBlock;
         }
         else {
-            let sqlQuery = "SELECT " + selectBlock
-                + " FROM " + fromBlock
-            if (whereItems.length > 0) {
-                sqlQuery += " WHERE (" + whereBlock + ")";
-            }
-            if (includeOrderby === true) {
-                sqlQuery += " ORDER BY " + orderbyBlock;
-            }
-            else {
-                sqlQuery += " ORDER BY products.id";
-            }
-            console.log(sqlQuery);
-            fetch(`http://localhost:8000/execute-query?query=${encodeURIComponent(sqlQuery)}`)
-                .then(response => response.json())
-                .then(data => {
-                    setData(data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            sql += " ORDER BY products.id";
         }
+        setSqlQuery(sql);
+    }, [fromBlock, includeOrderby, orderbyBlock, selectBlock, whereItems, whereBlock]);
+
+    const getData = (query) => {
+        console.log(query);
+        fetch(`http://localhost:8000/execute-query?query=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                setData(data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
     }
 
     const selectItemCheckboxChange = (e) => {
@@ -185,6 +189,25 @@ const GetInfoPage = () => {
         }
     }
 
+    const handleShowModal = () => {
+        if (selectItems.length === 0) {
+            alert("Please select at least one item in the Select field");
+        }
+        else {
+            setShowModal(true);
+        }
+    };
+
+    const handleUpdateData = (updatedData) => {
+        console.log(updatedData);
+        setShowModal(false);
+        getData(updatedData);
+    };
+
+    const handleClose = () => {
+        setShowModal(false);
+    }
+
     return (
         <div>
             <h1 className="mt-4">Search products</h1>
@@ -195,35 +218,35 @@ const GetInfoPage = () => {
                     </div>
                     <div className='control-panel'>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.id" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.id" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>id</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.name" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.name" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>name</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.producer" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.producer" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>producer</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.model" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.model" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>model</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.color" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.color" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>color</label>
                         </div>
                         <div className='control-panel-elem'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.price" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.price" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>price</label>
                         </div>
                         <div className='control-panel-elem mt-4'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="distributors.distributor" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="distributors.distributor" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>distributor</label>
                         </div>
                         <div className='control-panel-elem mt-4'>
-                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="import.import_tax" onChange={selectItemCheckboxChange}/>
+                            <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="import.import_tax" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>import_tax</label>
                         </div>
                     </div>
@@ -320,15 +343,16 @@ const GetInfoPage = () => {
                         ) : (<></>)}
                         <div className='control-panel-item mt-3'>
                             <div className='control-panel-elem form-switch'>
-                                <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange}/>
+                                <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange} />
                                 <h4 className='px-2 fs-5'>desc</h4>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <button className="btn btn-primary btn-lg px-4 mt-5" onClick={getData}>Get products data</button>
+            <button className="btn btn-primary btn-lg px-4 mt-5" onClick={handleShowModal}>Generate SQL</button>
             {data && <OutputTable data={data} />}
+            <ConfirmationModal show={showModal} data={sqlQuery} onUpdateData={handleUpdateData} onClose={handleClose} />
         </div>
     );
 }
