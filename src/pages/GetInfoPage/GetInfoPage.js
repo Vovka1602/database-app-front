@@ -30,12 +30,52 @@ const GetInfoPage = () => {
     const [orderbyItem, setOrderbyItem] = useState("products.id");
     const [orderDesc, setOrderDesc] = useState(false);
 
+    const [includeNameFilter, setIncludeNameFilter] = useState(false);
+    const [nameFilterOpt, setNameFilterOpt] = useState("selectvalues");
+    const [nameFilterValue, setNameFilterValue] = useState([]);
+    const [nameFilterOp, setnameFilterOp] = useState("=");
+    const [nameFilter, setNameFilter] = useState(null);
+
+    const [includeProducerFilter, setIncludeProducerFilter] = useState(false);
+    const [producerFilterValue, setProducerFilterValue] = useState([]);
+    const [producerFilter, setProducerFilter] = useState(null);
+
+    const [includeColorFilter, setIncludeColorFilter] = useState(false);
+    const [colorFilterOpt, setColorFilterOpt] = useState("IS ");
+    const [colorFilterValue, setColorFilterValue] = useState([]);
+    const [colorFilterOp, setColorFilterOp] = useState("=");
+    const [colorFilter, setColorFilter] = useState(null);
+
     const [selectBlock, setSelectBlock] = useState("");
     const [fromBlock, setFromBlock] = useState("");
     const [whereBlock, setWhereBlock] = useState("");
     const [orderbyBlock, setOrderbyBlock] = useState("products.id");
 
     const [sqlQuery, setSqlQuery] = useState("");
+
+    useEffect(() => { // Збірка фільтру NAME
+        setNameFilter({
+            "field": "products.name",
+            "operator": nameFilterOp,
+            "value": nameFilterValue
+        });
+    }, [nameFilterValue, nameFilterOp]);
+
+    useEffect(() => { // Збірка фільтру PRODUCER
+        setProducerFilter({
+            "field": "products.producer",
+            "operator": " ",
+            "value": producerFilterValue
+        });
+    }, [producerFilterValue]);
+
+    useEffect(() => { // Збірка фільтру COLOR
+        setColorFilter({
+            "field": "products.color",
+            "operator": colorFilterOp,
+            "value": colorFilterValue
+        });
+    }, [colorFilterOp, colorFilterValue])
 
     useEffect(() => {
         const compileSelectBlock = () => {
@@ -75,13 +115,27 @@ const GetInfoPage = () => {
 
         const compileWhereBlock = () => {
             let whereElements = [];
-            whereItems.forEach(elem => {
+            if (selectItems.includes("distributors.distributor")) {
+                whereElements.push(distributorsConnection);
+            }
+            if (selectItems.includes("import.import_tax")) {
+                whereElements.push(importConnenction);
+            }
+            if ((includeNameFilter === true) && (nameFilterValue.length > 0)) {
+                whereElements.push(nameFilter);
+            }
+            if ((includeProducerFilter === true) && (producerFilterValue.length > 0)) {
+                whereElements.push(producerFilter);
+            }
+            let whereOptions = [];
+            whereElements.forEach(elem => {
                 let element = elem.field + elem.operator;
                 let values = elem.value.join(` or ${elem.field}=`);
                 element += values;
-                whereElements.push(element);
+                whereOptions.push(element);
             });
-            setWhereBlock(whereElements.join(') and ('));
+            console.log(whereOptions);
+            setWhereBlock(whereOptions.join(') and ('));
         }
 
         const compileOrderbyBlock = () => {
@@ -96,12 +150,14 @@ const GetInfoPage = () => {
         compileFromBlock();
         compileWhereBlock();
         compileOrderbyBlock();
-    }, [selectItems, selectBlock, fromItems, whereItems, whereBlock, orderDesc, orderbyItem, orderbyBlock]);
+    }, [selectItems, selectBlock, fromItems, whereItems, whereBlock, orderDesc, orderbyItem, orderbyBlock,
+        distributorsConnection, importConnenction, includeNameFilter, nameFilter, nameFilterValue.length,
+        includeProducerFilter, producerFilter, producerFilterValue.length]);
 
     useEffect(() => {
         let sql = "SELECT " + selectBlock
             + " FROM " + fromBlock
-        if (whereItems.length > 0) {
+        if (whereBlock.length > 0) {
             sql += " WHERE (" + whereBlock + ")";
         }
         if (includeOrderby === true) {
@@ -206,13 +262,65 @@ const GetInfoPage = () => {
 
     const handleClose = () => {
         setShowModal(false);
+    };
+
+    const includeNameFilterSwitchChange = (e) => {
+        if (e.target.checked) {
+            setIncludeNameFilter(true);
+        } else {
+            setIncludeNameFilter(false);
+        }
+    }
+    const nameFilterOptSelectChange = (e) => {
+        setNameFilterOpt(e.target.value);
+        setNameFilterValue([]);
+        if (e.target.value === "selectvalues") {
+            setnameFilterOp("=");
+        } else {
+            setnameFilterOp(" ");
+        }
+    }
+    const nameFilterValueCheckboxChange = (e) => {
+        if (e.target.checked) {
+            setNameFilterValue(nameFilterValue => [...nameFilterValue, e.target.value]);
+        } else {
+            setNameFilterValue(nameFilterValue => nameFilterValue.filter(item => item !== e.target.value));
+        }
+        console.log(nameFilterValue);
+    }
+    const nameFilterExpressionTextareaChange = (e) => {
+        if (e.target.value === null || e.target.value === "") {
+            setNameFilterValue([]);
+        } else {
+            let value = [];
+            value.push(e.target.value);
+            setNameFilterValue(value);
+        }
+    }
+    
+    const producerFilterValueTextareaChange = (e) => {
+        if (e.target.value === null || e.target.value === "") {
+            setProducerFilterValue([]);
+        } else {
+            let value = [];
+            value.push(e.target.value);
+            setProducerFilterValue(value);
+        }
+    }
+
+    const includeProducerFilterSwitchChange = (e) => {
+        if (e.target.checked) {
+            setIncludeProducerFilter(true);
+        } else {
+            setIncludeProducerFilter(false);
+        }
     }
 
     return (
         <div className='container' data-bs-theme="dark">
             <h1>Search products</h1>
             <div className='control-panel-container'>
-                <div className='card mt-4 ms-3 me-3 px-1'>
+                <div className='card mt-4 px-1'>
                     <div className='control-panel-label'>
                         <h2>Select</h2>
                     </div>
@@ -251,7 +359,7 @@ const GetInfoPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className='card mt-4 ms-1 me-1 px-1'>
+                <div className='card mt-4 ms-2 px-1'>
                     <div className='control-panel-label'>
                         <input className='form-check-input px-2 py-2 mt-2 me-2' type='checkbox' onChange={includeOrderbyCheckboxChange}></input>
                         <h2>Order by</h2>
@@ -341,10 +449,78 @@ const GetInfoPage = () => {
                                 <label className='form-check-label px-2 fs-5'>import_tax</label>
                             </div>
                         ) : (<></>)}
-                        <div className='control-panel-item mt-3'>
+                        <div className='mt-3'>
                             <div className='control-panel-elem form-switch'>
                                 <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange} />
                                 <h4 className='px-2 fs-5'>desc</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='card filter-card mt-4 ms-2 px-1'>
+                    <div className='control-panel-label'>
+                        <h2>Filters</h2>
+                    </div>
+                    <div className='control-panel-row'>
+                        <div className='control-panel'>
+                            <div className='control-panel-elem form-switch'>
+                                <input className='form-check-input px-2 py-2' type='checkbox' onChange={includeNameFilterSwitchChange} />
+                                <h4 className='px-2 fs-5'>name</h4>
+                            </div>
+                            {includeNameFilter ? (
+                                <div className='control-panel-col'>
+                                    <div className='control-panel-elem'>
+                                        <select className='form-select' value={nameFilterOpt} onChange={nameFilterOptSelectChange}>
+                                            <option value="selectvalues">Select values</option>
+                                            <option value="expression">Expression</option>
+                                        </select>
+                                    </div>
+                                    {(nameFilterOpt === "selectvalues") ? (
+                                        <div>
+                                            <div className='control-panel-elem mt-2 ms-2 me-2'>
+                                                <input className='form-check-input mt-1' type='checkbox' value="'Мобільний телефон'" onChange={nameFilterValueCheckboxChange} />
+                                                <label className='form-check-label px-2'>Мобільний телефон</label>
+                                            </div>
+                                            <div className='control-panel-elem ms-2 me-2'>
+                                                <input className='form-check-input mt-1' type='checkbox' value="'Відеокарта'" onChange={nameFilterValueCheckboxChange} />
+                                                <label className='form-check-label px-2'>Відеокарта</label>
+                                            </div>
+                                            <div className='control-panel-elem ms-2 me-2'>
+                                                <input className='form-check-input mt-1' type='checkbox' value="'Процесор'" onChange={nameFilterValueCheckboxChange} />
+                                                <label className='form-check-label px-2'>Процесор</label>
+                                            </div>
+                                            <div className='control-panel-elem ms-2 me-2 mb-3'>
+                                                <input className='form-check-input mt-1' type='checkbox' value="'Навушники бездротові'" onChange={nameFilterValueCheckboxChange} />
+                                                <label className='form-check-label px-2'>Навушники бездротові</label>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <textarea
+                                            className='form-control mt-2 mb-3'
+                                            rows="3"
+                                            placeholder='Enter expression'
+                                            onChange={nameFilterExpressionTextareaChange}
+                                        />
+                                    )}
+                                </div>
+                            ) : (<></>)}
+                            <div className='control-panel-elem form-switch mt-2'>
+                                <input className='form-check-input px-2 py-2' type='checkbox' onChange={includeProducerFilterSwitchChange} />
+                                <h4 className='px-2 fs-5'>producer</h4>
+                            </div>
+                            {includeProducerFilter ? (
+                                <textarea
+                                    className='form-control mt-1 mb-2'
+                                    rows="2"
+                                    placeholder='Enter expression'
+                                    onChange={producerFilterValueTextareaChange}
+                                />
+                            ) : (<></>)}
+                        </div>
+                        <div className='control-panel'>
+                            <div className='control-panel-elem form-switch'>
+                                <input className='form-check-input px-2 py-2' type='checkbox' />
+                                <h4 className='px-2 fs-5'>color</h4>
                             </div>
                         </div>
                     </div>
@@ -353,8 +529,8 @@ const GetInfoPage = () => {
             <button className='button-green mt-3' onClick={handleShowModal}>
                 <div className='button-content'>
                     <div className='button-icon'>
-                        <img src='./images/tick_green.png'></img>
-                        <img className='img-hover' src='./images/tick_black.png'></img>
+                        <img src='./images/tick_green.png' alt=''></img>
+                        <img className='img-hover' src='./images/tick_black.png' alt=''></img>
                     </div>
                     <div className='button-label'>
                         Generate SQL

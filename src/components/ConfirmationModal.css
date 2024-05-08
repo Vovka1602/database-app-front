@@ -40,4 +40,12 @@
     background-color: rgb(20, 22, 25);
     border: 2px solid rgba(200, 200, 200, 0.4);
     color: rgb(220, 220, 220);
+    transition: all 0.2s;
+}
+
+.confirmation-modal textarea:focus {
+    background-color: rgb(32, 33, 36);
+    border: 2px solid rgba(200, 200, 200, 0.4);
+    color: rgb(200, 200, 200);
+    transition: all 0.2s;
 }

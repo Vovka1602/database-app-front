@@ -11,6 +11,15 @@
     padding-bottom: 14px;
 }
 
+.control-panel-row {
+    display: flex;
+}
+
+.control-panel-col {
+    display: flex;
+    flex-direction: column;
+}
+
 .control-panel-elem {
     display: flex;
     flex-direction: row;
@@ -26,6 +35,10 @@
 
 .card {
     border-radius: 14px;
+}
+
+.filter-card {
+    width: 57%;
 }
 
 .form-check-input {
@@ -108,6 +121,7 @@ button:hover .button-content .img-hover {
     color:rgb(255, 105, 105);
     transform: scale(1);
     transition: all 0.3s;
+    font-weight: 600;
 }
 
 .button-red:hover {
@@ -125,7 +139,7 @@ button:hover .button-content .img-hover {
 }
 
 .button-green {
-    background-color: rgb(12, 60, 33);
+    background-color: rgb(14, 72, 41);
     color:rgb(109, 236, 128);
     font-weight: 600;
     transform: scale(1);
@@ -146,4 +160,13 @@ button:hover .button-content .img-hover {
     box-shadow: 0 0px 50px rgba(66, 235, 95, 0.4);
     transform: scale(0.9);
     transition: all 0.2s;
+}
+
+.form-control {
+    background-color: rgb(22, 26, 30);
+}
+
+.form-select {
+    background-color: rgb(28, 30, 35);
+    max-width: 70%;
 }
