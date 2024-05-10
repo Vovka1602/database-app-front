@@ -54,6 +54,17 @@
     color: white;
 }
 
+.main-menu {
+    margin: 0;
+    width: 100%;
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-menu h1 {
+    color: rgb(200, 200, 200);
+}
 
 @keyframes App-logo-spin {
     from {

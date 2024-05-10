@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MainPage from './pages/Main/MainPage';
 import "bootstrap/dist/css/bootstrap.min.css";
 import GetInfoPage from './pages/GetInfoPage/GetInfoPage';
+import MathOperationsPage from './pages/MathOperationsPage/MathOperationsPage';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
             <Routes>
                 <Route path='/' element={ <MainPage/> }/>
                 <Route path='/getinfo' element={ <GetInfoPage/> }/>
+                <Route path='/mathops' element={ <MathOperationsPage/> }/>
             </Routes>
         </BrowserRouter>
     </div>
