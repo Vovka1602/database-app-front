@@ -255,9 +255,6 @@ const MathOperationsPage = () => {
         if (includeOrderby === true) {
             sql += " ORDER BY " + orderbyBlock;
         }
-        else {
-            sql += " ORDER BY products.id";
-        }
         setSqlQuery(sql);
     }, [includeOrderby, orderbyBlock, whereBlock, operation, asValue]);
 
@@ -276,7 +273,6 @@ const MathOperationsPage = () => {
     const operatorSelectChange = (e) => {
         if (operator === "count*" || e.target.value === "count*") {
             setOperand("products.name");
-            setAsValue("");
         }
         setOperator(e.target.value);
     }
