@@ -23,7 +23,7 @@ const MathOperationsPage = () => {
     const [showModal, setShowModal] = useState(false);
 
     const [operator, setOperator] = useState("count*");
-    const [operand, setOperand] = useState("");
+    const [operand, setOperand] = useState("products.name");
     const [asValue, setAsValue] = useState("");
     const [operation, setOperation] = useState("count(*)");
 
@@ -69,7 +69,6 @@ const MathOperationsPage = () => {
     const [importtaxFilterMax, setImporttaxFilterMax] = useState(null);
     const [importtaxFilterExpression, SetImporttaxFilterExpression] = useState(null);
 
-    const [selectBlock, setSelectBlock] = useState("");
     const [whereBlock, setWhereBlock] = useState("");
     const [orderbyBlock, setOrderbyBlock] = useState("products.id");
 
@@ -78,6 +77,8 @@ const MathOperationsPage = () => {
     useEffect(() => { // Збірка компонента OPERATION
         if (operator === "count*") {
             setOperation("count(*)")
+        } else if (operator === "countd") {
+            setOperation("count(distinct " + operand + ")");
         } else {
             setOperation(operator + "(" + operand + ")");
         }
@@ -222,7 +223,7 @@ const MathOperationsPage = () => {
 
         compileWhereBlock();
         compileOrderbyBlock();
-    }, [selectBlock, whereBlock, orderDesc, orderbyItem, orderbyBlock,
+    }, [whereBlock, orderDesc, orderbyItem, orderbyBlock,
         distributorsConnection, importConnenction, includeNameFilter, nameFilter, nameFilterValue.length,
         includeProducerFilter, producerFilter, producerFilterValue.length,
         includeColorFilter, colorFilter, colorFilterValue.length,
@@ -248,7 +249,7 @@ const MathOperationsPage = () => {
             sql += " ORDER BY products.id";
         }
         setSqlQuery(sql);
-    }, [includeOrderby, orderbyBlock, selectBlock, whereBlock]);
+    }, [includeOrderby, orderbyBlock, whereBlock, operation, asValue]);
 
     const getData = (query) => {
         console.log(query);
@@ -264,7 +265,7 @@ const MathOperationsPage = () => {
 
     const operatorSelectChange = (e) => {
         if (operator === "count*" || e.target.value === "count*") {
-            setOperand("");
+            setOperand("products.name");
             setAsValue("");
         }
         setOperator(e.target.value);
@@ -515,18 +516,45 @@ const MathOperationsPage = () => {
         <div className='container' data-bs-theme="dark">
             <h1>Mathematical operations</h1>
             <div className='control-panel-container'>
-                <div className='card-column ms-2'>
-                    <div className='card operation-card mt-4 px-1'>
+                <div className='card-column ms-2 mt-4'>
+                    <div className='card operation-card px-1'>
                         <div className='control-panel-label'>
                             <h3>Operation</h3>
                         </div>
                         <div className='control-panel'>
                             <div className='control-panel-elem'>
-
+                                <label className='px-2 fs-5'>Operator</label>
                             </div>
+                            <div className='control-panel-elem mt-1'>
+                                <select className='form-select' value={operator} onChange={operatorSelectChange}>
+                                    <option value="count*">count(*)</option>
+                                    <option value="countd">count distinct</option>
+                                    <option value="min">min</option>
+                                    <option value="max">max</option>
+                                    <option value="avg">avg</option>
+                                </select>
+                            </div>
+                            {(operator !== "count*") ? (
+                                <div className='control-panel-col'>
+                                    <div className='control-panel-elem'>
+                                        <label className='px-2 fs-5 mt-2'>Operand</label>
+                                    </div>
+                                    <div className='control-panel-elem'>
+                                        <select className='form-select' value={operand} onChange={operandSelectChange}>
+                                            <option value="products.name">name</option>
+                                            <option value="products.producer">producer</option>
+                                            <option value="products.model">model</option>
+                                            <option value="products.color">color</option>
+                                            <option value="products.price">price</option>
+                                            <option value="distributors.distributor">distributor</option>
+                                            <option value="import.import_tax">import_tax</option>  
+                                        </select> 
+                                    </div>
+                                </div>
+                            ) : (<></>)}
                         </div>
                     </div>
-                    <div className='card groupby-card mt-2 px-1'>
+                    <div className='card groupby-card px-1'>
                         <div className='control-panel-label'>
                             <h3>Group by</h3>
                         </div>

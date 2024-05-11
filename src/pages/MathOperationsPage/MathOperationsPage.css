@@ -1,11 +1,12 @@
 .card-column {
-    width: 20%;
+    width: 22%;
 }
 
 .operation-card {
-    height: 60%;
+    height: 70%;
 }
 
 .groupby-card {
-    height: 32.2%;
+    margin-top: 8px;
+    height: calc(30% - 8px);
 }
