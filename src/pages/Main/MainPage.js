@@ -16,7 +16,7 @@ const MainPage = () => {
                 <button className="btn btn-primary btn-lg px-5 mt-4">View Import table</button>
             </a>
             <a href='/getinfo'>
-                <button className="btn btn-primary btn-lg px-5 mt-4">Search products</button>
+                <button className="btn btn-primary btn-lg px-5 mt-4">Search & Filter</button>
             </a>
             <a href='/mathops'>
                 <button className="btn btn-primary btn-lg px-5 mt-4">Mathematical operations</button>

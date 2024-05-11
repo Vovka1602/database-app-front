@@ -579,7 +579,7 @@ const GetInfoPage = () => {
 
     return (
         <div className='container' data-bs-theme="dark">
-            <h1>Search products</h1>
+            <h1>Search and filtering</h1>
             <div className='control-panel-container'>
                 <div className='card select-card mt-4 px-1'>
                     <div className='control-panel-label'>
