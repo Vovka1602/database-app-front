@@ -539,7 +539,7 @@ const MathOperationsPage = () => {
                                     <div className='control-panel-elem'>
                                         <label className='px-2 fs-5 mt-2'>Operand</label>
                                     </div>
-                                    <div className='control-panel-elem'>
+                                    <div className='control-panel-elem mt-1'>
                                         <select className='form-select' value={operand} onChange={operandSelectChange}>
                                             <option value="products.name">name</option>
                                             <option value="products.producer">producer</option>
@@ -549,6 +549,10 @@ const MathOperationsPage = () => {
                                             <option value="distributors.distributor">distributor</option>
                                             <option value="import.import_tax">import_tax</option>  
                                         </select> 
+                                    </div>
+                                    <div className='control-panel-elem mt-2'>
+                                        <label className='px-2 mt-2'>As:</label>
+                                        <input className='form-control' onChange={asValueInputChange}/>
                                     </div>
                                 </div>
                             ) : (<></>)}
