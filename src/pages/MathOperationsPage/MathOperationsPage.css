@@ -1,5 +1,5 @@
 .card-column {
-    width: 22%;
+    width: 20%;
 }
 
 .operation-card {
@@ -8,5 +8,5 @@
 
 .groupby-card {
     margin-top: 8px;
-    height: calc(30% - 8px);
+    height: calc(408px - 70%);
 }

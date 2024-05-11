@@ -27,6 +27,9 @@ const MathOperationsPage = () => {
     const [asValue, setAsValue] = useState("");
     const [operation, setOperation] = useState("count(*)");
 
+    const [includeGroupby, setIncludeGroupby] = useState(false);
+    const [groupbyItem, setGroupbyItem] = useState("products.name");
+
     const [includeOrderby, setIncludeOrderby] = useState(false);
     const [orderbyItem, setOrderbyItem] = useState("products.id");
     const [orderDesc, setOrderDesc] = useState(false);
@@ -234,13 +237,20 @@ const MathOperationsPage = () => {
         importtaxFilterMax, importtaxFilterMaxValue.length, importtaxFilterMin, importtaxFilterMinValue.length]);
 
     useEffect(() => { // Створення SQL-запиту
-        let sql = "SELECT " + operation;
+        let sql = "SELECT ";
+        if (includeGroupby === true) {
+            sql += groupbyItem + ", ";
+        }
+        sql += operation;
         if (asValue.length > 0) {
             sql += " AS " + asValue;
         }
         sql += " FROM products, distributors, import";
         if (whereBlock.length > 0) {
             sql += " WHERE (" + whereBlock + ")";
+        }
+        if (includeGroupby === true) {
+            sql += " GROUP BY " + groupbyItem;
         }
         if (includeOrderby === true) {
             sql += " ORDER BY " + orderbyBlock;
@@ -275,6 +285,18 @@ const MathOperationsPage = () => {
     }
     const asValueInputChange = (e) => {
         setAsValue(e.target.value);
+    }
+
+    const includeGroupbyCheckboxChange = (e) => {
+        setGroupbyItem("products.name");
+        if (e.target.checked) {
+            setIncludeGroupby(true);
+        } else {
+            setIncludeGroupby(false);
+        }
+    }
+    const groupbyItemSelectChange = (e) => {
+        setGroupbyItem(e.target.value);
     }
 
     const includeOrderbyCheckboxChange = (e) => {
@@ -547,20 +569,34 @@ const MathOperationsPage = () => {
                                             <option value="products.color">color</option>
                                             <option value="products.price">price</option>
                                             <option value="distributors.distributor">distributor</option>
-                                            <option value="import.import_tax">import_tax</option>  
-                                        </select> 
-                                    </div>
-                                    <div className='control-panel-elem mt-2'>
-                                        <label className='px-2 mt-2'>As:</label>
-                                        <input className='form-control' onChange={asValueInputChange}/>
+                                            <option value="import.import_tax">import_tax</option>
+                                        </select>
                                     </div>
                                 </div>
                             ) : (<></>)}
+                            <div className='control-panel-elem mt-1 mb-2'>
+                                <label className='px-2 mt-2'>As:</label>
+                                <input className='form-control' onChange={asValueInputChange} />
+                            </div>
                         </div>
                     </div>
                     <div className='card groupby-card px-1'>
                         <div className='control-panel-label'>
+                            <input className='form-check-input px-2 py-2 mt-2 me-2' type='checkbox' onChange={includeGroupbyCheckboxChange} />
                             <h3>Group by</h3>
+                        </div>
+                        <div className='control-panel'>
+                            {includeGroupby ? (
+                                <select className='form-select' value={groupbyItem} onChange={groupbyItemSelectChange}>
+                                    <option value="products.name">name</option>
+                                    <option value="products.producer">producer</option>
+                                    <option value="products.model">model</option>
+                                    <option value="products.color">color</option>
+                                    <option value="products.price">price</option>
+                                    <option value="distributors.distributor">distributor</option>
+                                    <option value="import.import_tax">import_tax</option>
+                                </select>
+                            ) : (<></>)}
                         </div>
                     </div>
                 </div>

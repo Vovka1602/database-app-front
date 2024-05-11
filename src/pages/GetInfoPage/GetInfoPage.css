@@ -3,6 +3,7 @@
     flex-direction: row;
     margin-left: 20px;
     margin-right: 20px;
+    height: 440px;
 }
 
 .control-panel {
@@ -35,7 +36,6 @@
 
 .card {
     border-radius: 14px;
-    padding-bottom: 16px;
 }
 
 .select-card {
