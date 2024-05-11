@@ -625,98 +625,100 @@ const GetInfoPage = () => {
                         <input className='form-check-input px-2 py-2 mt-2 me-2' type='checkbox' onChange={includeOrderbyCheckboxChange}></input>
                         <h2>Order by</h2>
                     </div>
-                    <div className='control-panel'>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.id"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.id"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>id</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.name"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.name"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>name</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.producer"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.producer"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>producer</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.model"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.model"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>model</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.color"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.color"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>color</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.price"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.price"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>price</label>
-                        </div>
-                        {selectItems.includes("distributors.distributor") ? (
+                    {includeOrderby ? (
+                        <div className='control-panel'>
                             <div className='control-panel-elem'>
                                 <input
                                     className='form-check-input px-2 py-2 mt-2'
                                     type="radio"
-                                    value="distributors.distributor"
+                                    value="products.id"
                                     onChange={orderbyRadioChange}
-                                    checked={orderbyItem === "distributors.distributor"}
+                                    checked={orderbyItem === "products.id"}
                                 />
-                                <label className='form-check-label px-2 fs-5'>distributor</label>
+                                <label className='form-check-label px-2 fs-5'>id</label>
                             </div>
-                        ) : (<></>)}
-                        {selectItems.includes("import.import_tax") ? (
                             <div className='control-panel-elem'>
                                 <input
                                     className='form-check-input px-2 py-2 mt-2'
                                     type="radio"
-                                    value="import.import_tax"
+                                    value="products.name"
                                     onChange={orderbyRadioChange}
-                                    checked={orderbyItem === "import.import_tax"}
+                                    checked={orderbyItem === "products.name"}
                                 />
-                                <label className='form-check-label px-2 fs-5'>import_tax</label>
+                                <label className='form-check-label px-2 fs-5'>name</label>
                             </div>
-                        ) : (<></>)}
-                        <div className='mt-3'>
-                            <div className='control-panel-elem form-switch'>
-                                <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange} />
-                                <h4 className='px-2 fs-5'>desc</h4>
+                            <div className='control-panel-elem'>
+                                <input
+                                    className='form-check-input px-2 py-2 mt-2'
+                                    type="radio"
+                                    value="products.producer"
+                                    onChange={orderbyRadioChange}
+                                    checked={orderbyItem === "products.producer"}
+                                />
+                                <label className='form-check-label px-2 fs-5'>producer</label>
+                            </div>
+                            <div className='control-panel-elem'>
+                                <input
+                                    className='form-check-input px-2 py-2 mt-2'
+                                    type="radio"
+                                    value="products.model"
+                                    onChange={orderbyRadioChange}
+                                    checked={orderbyItem === "products.model"}
+                                />
+                                <label className='form-check-label px-2 fs-5'>model</label>
+                            </div>
+                            <div className='control-panel-elem'>
+                                <input
+                                    className='form-check-input px-2 py-2 mt-2'
+                                    type="radio"
+                                    value="products.color"
+                                    onChange={orderbyRadioChange}
+                                    checked={orderbyItem === "products.color"}
+                                />
+                                <label className='form-check-label px-2 fs-5'>color</label>
+                            </div>
+                            <div className='control-panel-elem'>
+                                <input
+                                    className='form-check-input px-2 py-2 mt-2'
+                                    type="radio"
+                                    value="products.price"
+                                    onChange={orderbyRadioChange}
+                                    checked={orderbyItem === "products.price"}
+                                />
+                                <label className='form-check-label px-2 fs-5'>price</label>
+                            </div>
+                            {selectItems.includes("distributors.distributor") ? (
+                                <div className='control-panel-elem'>
+                                    <input
+                                        className='form-check-input px-2 py-2 mt-2'
+                                        type="radio"
+                                        value="distributors.distributor"
+                                        onChange={orderbyRadioChange}
+                                        checked={orderbyItem === "distributors.distributor"}
+                                    />
+                                    <label className='form-check-label px-2 fs-5'>distributor</label>
+                                </div>
+                            ) : (<></>)}
+                            {selectItems.includes("import.import_tax") ? (
+                                <div className='control-panel-elem'>
+                                    <input
+                                        className='form-check-input px-2 py-2 mt-2'
+                                        type="radio"
+                                        value="import.import_tax"
+                                        onChange={orderbyRadioChange}
+                                        checked={orderbyItem === "import.import_tax"}
+                                    />
+                                    <label className='form-check-label px-2 fs-5'>import_tax</label>
+                                </div>
+                            ) : (<></>)}
+                            <div className='mt-3'>
+                                <div className='control-panel-elem form-switch'>
+                                    <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange} />
+                                    <h4 className='px-2 fs-5'>desc</h4>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    ) : (<></>)}
                 </div>
                 <div className='card filter-card mt-4 ms-2 px-1'>
                     <div className='control-panel-label'>
@@ -922,7 +924,7 @@ const GetInfoPage = () => {
                         <img className='img-hover' src='./images/tick_black.png' alt=''></img>
                     </div>
                     <div className='button-label'>
-                        Generate SQL
+                        Generate SQL query
                     </div>
                 </div>
             </button>

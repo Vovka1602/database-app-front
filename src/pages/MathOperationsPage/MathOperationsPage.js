@@ -835,7 +835,7 @@ const MathOperationsPage = () => {
                         <img className='img-hover' src='./images/tick_black.png' alt=''></img>
                     </div>
                     <div className='button-label'>
-                        Generate SQL
+                        Generate SQL query
                     </div>
                 </div>
             </button>
