@@ -6,18 +6,6 @@ import ConfirmationModal from '../../components/ConfirmationModal';
 import "./MathOperationsPage.css";
 
 const MathOperationsPage = () => {
-    const distributorsConnection = {
-        "field": "distributors.producer",
-        "operator": "=",
-        "value": ['products.producer']
-    }
-
-    const importConnenction = {
-        "field": "import.id",
-        "operator": "=",
-        "value": ['products.id']
-    }
-
     const [data, setData] = useState(null);
 
     const [showModal, setShowModal] = useState(false);
@@ -168,6 +156,17 @@ const MathOperationsPage = () => {
     }, [importtaxFilterExpressionValue]);
 
     useEffect(() => { // Компіляція блоків
+        const distributorsConnection = {
+            "field": "distributors.producer",
+            "operator": "=",
+            "value": ['products.producer']
+        }
+
+        const importConnenction = {
+            "field": "import.id",
+            "operator": "=",
+            "value": ['products.id']
+        }
         const compileWhereBlock = () => {
             let whereElements = [];
             whereElements.push(distributorsConnection);
@@ -227,7 +226,7 @@ const MathOperationsPage = () => {
         compileWhereBlock();
         compileOrderbyBlock();
     }, [whereBlock, orderDesc, orderbyItem, orderbyBlock,
-        distributorsConnection, importConnenction, includeNameFilter, nameFilter, nameFilterValue.length,
+        includeNameFilter, nameFilter, nameFilterValue.length,
         includeProducerFilter, producerFilter, producerFilterValue.length,
         includeColorFilter, colorFilter, colorFilterValue.length,
         includeModelFilter, modelFilter, modelFilterValue.length,
@@ -256,7 +255,7 @@ const MathOperationsPage = () => {
             sql += " ORDER BY " + orderbyBlock;
         }
         setSqlQuery(sql);
-    }, [includeOrderby, orderbyBlock, whereBlock, operation, asValue]);
+    }, [includeOrderby, orderbyBlock, whereBlock, operation, asValue, includeGroupby, groupbyItem]);
 
     const getData = (query) => {
         console.log(query);
@@ -596,100 +595,44 @@ const MathOperationsPage = () => {
                         </div>
                     </div>
                 </div>
-                <div className='card orderby-card mt-4 ms-2 px-1'>
-                    <div className='control-panel-label'>
-                        <input className='form-check-input px-2 py-2 mt-2 me-2' type='checkbox' onChange={includeOrderbyCheckboxChange}></input>
-                        <h2>Order by</h2>
-                    </div>
-                    <div className='control-panel'>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.id"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.id"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>id</label>
+                {includeGroupby ? (
+                    <div className='card math-orderby-card mt-4 ms-2 px-1'>
+                        <div className='control-panel-label'>
+                            <input className='form-check-input px-2 py-2 mt-2 me-2' type='checkbox' onChange={includeOrderbyCheckboxChange}></input>
+                            <h2>Order by</h2>
                         </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.name"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.name"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>name</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.producer"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.producer"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>producer</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.model"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.model"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>model</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.color"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.color"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>color</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="products.price"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "products.price"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>price</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="distributors.distributor"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "distributors.distributor"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>distributor</label>
-                        </div>
-                        <div className='control-panel-elem'>
-                            <input
-                                className='form-check-input px-2 py-2 mt-2'
-                                type="radio"
-                                value="import.import_tax"
-                                onChange={orderbyRadioChange}
-                                checked={orderbyItem === "import.import_tax"}
-                            />
-                            <label className='form-check-label px-2 fs-5'>import_tax</label>
-                        </div>
-                        <div className='mt-3'>
-                            <div className='control-panel-elem form-switch'>
-                                <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange} />
-                                <h4 className='px-2 fs-5'>desc</h4>
+                        {includeOrderby ? (
+                            <div className='control-panel'>
+                                <div className='control-panel-elem'>
+                                    <input
+                                        className='form-check-input px-2 py-2 mt-2'
+                                        type="radio"
+                                        value={groupbyItem}
+                                        onChange={orderbyRadioChange}
+                                        checked={orderbyItem === groupbyItem}
+                                    />
+                                    <label className='form-check-label px-2 fs-5'>Group by field</label>
+                                </div>
+                                <div className='control-panel-elem'>
+                                    <input
+                                        className='form-check-input px-2 py-2 mt-2'
+                                        type="radio"
+                                        value={operation}
+                                        onChange={orderbyRadioChange}
+                                        checked={orderbyItem === operation}
+                                    />
+                                    <label className='form-check-label px-2 fs-5'>operation result</label>
+                                </div>
+                                <div className='mt-3'>
+                                    <div className='control-panel-elem form-switch'>
+                                        <input className='form-check-input px-2 py-2' type='checkbox' onChange={orderbyDescCheckboxChange} />
+                                        <h4 className='px-2 fs-5'>desc</h4>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        ) : (<></>)}
                     </div>
-                </div>
+                ) : (<></>)}
                 <div className='card filter-card mt-4 ms-2 px-1'>
                     <div className='control-panel-label'>
                         <h2>Filters</h2>
