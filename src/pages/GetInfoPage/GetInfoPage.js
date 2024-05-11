@@ -30,6 +30,8 @@ const GetInfoPage = () => {
     const [orderbyItem, setOrderbyItem] = useState("products.id");
     const [orderDesc, setOrderDesc] = useState(false);
 
+    const [limitValue, setLimitValue] = useState("");
+
     const [includeNameFilter, setIncludeNameFilter] = useState(false);
     const [nameFilterOpt, setNameFilterOpt] = useState("selectvalues");
     const [nameFilterValue, setNameFilterValue] = useState([]);
@@ -277,8 +279,11 @@ const GetInfoPage = () => {
         else {
             sql += " ORDER BY products.id";
         }
+        if (limitValue.length > 0) {
+            sql += " LIMIT " + limitValue;
+        }
         setSqlQuery(sql);
-    }, [fromBlock, includeOrderby, orderbyBlock, selectBlock, whereItems, whereBlock]);
+    }, [fromBlock, includeOrderby, orderbyBlock, selectBlock, whereItems, whereBlock, limitValue]);
 
     const getData = (query) => {
         console.log(query);
@@ -336,6 +341,10 @@ const GetInfoPage = () => {
             }
         }
     };
+
+    const limitValueInputChange = (e) => {
+        setLimitValue(e.target.value);
+    }
 
     const includeOrderbyCheckboxChange = (e) => {
         if (e.target.checked) {
@@ -610,13 +619,17 @@ const GetInfoPage = () => {
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="products.price" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>price</label>
                         </div>
-                        <div className='control-panel-elem mt-4'>
+                        <div className='control-panel-elem mt-3'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="distributors.distributor" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>distributor</label>
                         </div>
-                        <div className='control-panel-elem mt-4'>
+                        <div className='control-panel-elem mt-3'>
                             <input className='form-check-input px-2 py-2 mt-2' type='checkbox' value="import.import_tax" onChange={selectItemCheckboxChange} />
                             <label className='form-check-label px-2 fs-5'>import_tax</label>
+                        </div>
+                        <div className='control-panel-elem mt-4'>
+                            <label className='px-2 mt-2'>Limit</label>
+                            <input className='form-control' onChange={limitValueInputChange}/>
                         </div>
                     </div>
                 </div>
